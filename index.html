@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Britney Trivia</title>
+    <style>
+        body {
+            font-size: 18px;
+            font-family: sans-serif;
+            color: #666;
+        }
+        .question {
+            font-weight: bold;
+        }
+        .answers {
+            margin-bottom: 20px;
+        }
+        .answers label {
+            display: block;
+        }
+        #submit {
+            font-family: sans-serif;
+            font-size: 20px;
+            background-color: #279;
+            color: white;
+            border: 0px;
+            border-radius: 3px;
+            padding: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        #submit:hover {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="quiz"></div>
+    <button id="submit">Submit Answers</button>
+    <div id="results"></div>
+    <script>
+        var quizContainer = document.querySelector('#quiz');
+        var resultsContainer = document.getElementById('results');
+        var submitButton = document.getElementById('submit');
+        var myQuestions = [
+            {
+                question: "When was Britney Spears born?",
+                answers: {
+                    a: "1981",
+                    b: "1982",
+                    c: "1983"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "What is the home town of Britney Spears?",
+                answers: {
+                    a: "Jackson, Mississippi",
+                    b: "San Francisco, California",
+                    c: "Kentwood, Louisiana"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "What is the birth town of Britney Spears?",
+                answers: {
+                    a: "McComb, Mississippi",
+                    b: "Toronto, Canada",
+                    c: "New York City, New York"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "How many children does Britney Spears have?",
+                answers: {
+                    a: "0",
+                    b: "1",
+                    c: "2"
+                },
+                correctAnswer: "c"
+            }
+        ];
+        function buildQuiz() {
+            const output = [];
+            myQuestions.forEach(
+                (currentQuestion, questionNumber) => {
+                    var answers = [];
+                    for (letter in currentQuestion.answers) {
+                        answers.push(
+                            `<label>
+          <input type="radio" name="question${questionNumber}" value="${letter}">
+          ${letter} :
+          ${currentQuestion.answers[letter]}
+        </label>`
+                        );
+                    }
+                    output.push(
+                        `<div class="question"> ${currentQuestion.question} </div>
+      <div class="answers"> ${answers.join('')} </div>`
+                    );
+                }
+            );
+            quizContainer.innerHTML = output.join('');
+        }
+        function showResults() {
+            // gather answer containers from our quiz
+            const answerContainers = quizContainer.querySelectorAll('.answers');
+            // keep track of user's answers
+            let numCorrect = 0;
+            // for each question...
+            myQuestions.forEach((currentQuestion, questionNumber) => {
+                // find selected answer
+                const answerContainer = answerContainers[questionNumber];
+                const selector = 'input[name=question' + questionNumber + ']:checked';
+                const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+                // if answer is correct
+                if (userAnswer === currentQuestion.correctAnswer) {
+                    // add to the number of correct answers
+                    numCorrect++;
+                    // color the answers green
+                    answerContainers[questionNumber].style.color = 'lightgreen';
+                }
+                // if answer is wrong or blank
+                else {
+                    // color the answers red
+                    answerContainers[questionNumber].style.color = 'red';
+                }
+            });
+            resultsContainer.innerHTML = 'You got ' + numCorrect + ' out of ' + myQuestions.length + ' correct.';
+        }
+        buildQuiz();
+        submitButton.addEventListener('click', showResults);
+    </script>
+</body>
+
+</html>
